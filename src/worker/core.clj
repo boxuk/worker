@@ -3,26 +3,23 @@
 
 (def workers (ref {}))
 
-(defn- worker-id
-  "Create a valid worker ID (needs to be a vector)"
-  [id]
-  (if (vector? id)
-    id
-    (vector id)))
-
 ;; Public
 ;; ------
+
+(defmulti worker-id
+  "Return a vector for an ID"
+  class)
 
 (defn worker-get
   "Try and fetch a future for the worker if it exists"
   [id]
-  (get-in @workers id))
+  (get-in @workers (worker-id id)))
 
 (defn worker-set
   "Store the future for the specified worker"
   [id f]
   (dosync
-    (alter workers assoc-in id f)))
+    (alter workers assoc-in (worker-id id) f)))
 
 (defn worker-clear
   "A worker has finished, clear it from the ref"
@@ -40,4 +37,15 @@
          (with-meta @f# {:via-worker true})
          (finally
            (worker-clear ~id))))))
+
+;; Worker ID Impls
+;; ---------------
+
+(defmethod worker-id
+  java.lang.String
+  [id] [id])
+
+(defmethod worker-id
+  clojure.lang.PersistentVector
+  [id] id)
 
