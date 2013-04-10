@@ -8,6 +8,8 @@ as a single request to the backend service.
 
 ## Usage
 
+You can install Worker via [Clojars](https://clojars.org/worker).
+
 ```clojure
 (:use [worker.core :only [worker]])
 
