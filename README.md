@@ -2,9 +2,9 @@
 # Worker - Simultaneous Tasks!
 
 This is a dirt simple library that tries to use futures to manage identical simultaneous tasks.  The
-motivation came from a JSON API app that could have potentially lengthy (5-10 second) requests that
-would produce identical results if all issued around the same time.  Worker allows them to be issued
-as a single request to the backend service.
+motivation came from a JSON API app that could have potentially lengthy (5-10 second) requests to a
+backend server that would produce identical results if all issued around the same time.  Worker
+allows them to be handled as a single task.
 
 ## Usage
 
