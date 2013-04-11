@@ -33,5 +33,9 @@ The task ID used above was a string, but you can use vectors as well.
   (some-task))
 ```
 
-Internally a map is used to store futures, accessed via _get-in_.
+This is available for extension via a multimethod.
+
+```clojure
+(defmulti make-id class)
+```
 
