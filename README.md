@@ -8,7 +8,7 @@ allows them to be handled as a single task.
 
 ## Usage
 
-You can install Worker via [Clojars](https://clojars.org/worker).
+You can install Worker via [Clojars](https://clojars.org/boxuk/worker).
 
 ```clojure
 (:use [worker.core :only [worker]])
