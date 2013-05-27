@@ -1,7 +1,7 @@
 
 (ns worker.core)
 
-(def workers (ref {}))
+(def workers (atom {}))
 
 ;; Public
 ;; ------
@@ -18,29 +18,22 @@
 (defn store
   "Store the future for the specified worker"
   [id f]
-  (dosync
-    (alter workers assoc-in (make-id id) f)))
+  (swap! workers assoc-in (make-id id) f))
 
 (defn clear
   "A worker has finished, clear it from the ref"
   [id]
   (store id nil))
 
-(defn result
-  "Produce a result from a future"
-  [f info]
-  (if-let [data @f]
-    (with-meta data info)))
-
 (defmacro worker
   "Use futures to handle waiting on tasks already being processed"
   [id & body]
   `(if-let [waiting# (fetch ~id)]
-     (result waiting# {:via-worker false})
+     (deref waiting#)
      (let [f# (future ~@body)]
        (store ~id f#)
        (try
-         (result f# {:via-worker true})
+         (deref f#)
          (finally
            (clear ~id))))))
 
@@ -54,4 +47,8 @@
 (defmethod make-id
   clojure.lang.PersistentVector
   [id] id)
+
+(defmethod make-id
+  clojure.lang.Keyword
+  [id] [id])
 
